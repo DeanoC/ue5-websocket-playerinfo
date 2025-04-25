@@ -1,0 +1,24 @@
+{
+  "name": "PlayerInfo",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "main": "electron/main.js",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "electron:dev": "tsc -p electron && vite build && electron .",
+    "electron:build": "tsc -p electron && vite build && electron-builder"
+  },
+  "devDependencies": {
+    "typescript": "^5.2.2",
+    "prettier": "^3.3.1",
+    "vite": "^5.2.0",
+    "electron": "^29.1.0",
+    "electron-builder": "^24.13.3"
+  },
+  "dependencies": {
+    "ws": "^8.16.0"
+  }
+}
