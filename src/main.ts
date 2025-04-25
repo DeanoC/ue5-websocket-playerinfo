@@ -27,13 +27,15 @@ const defaultPlayerStats: PlayerStats = {
 let currentPlayerStats: PlayerStats = { ...defaultPlayerStats };
 
 /**
- * Setup the player stats display
+ * Set up the player stats display
  * @param element The HTML element to display the stats in
  */
 export function setupPlayerStatsDisplay(element: HTMLElement) {
   // Function to update the UI with player stats
   const updateStatsDisplay = (stats: PlayerStats) => {
-    // Create HTML for the stats display
+    console.log('Updating stats display with:', stats);
+
+    // Create HTML for the stats' display
     let statsHtml = `
       <div class="stat-item">
         <span class="stat-label">Health:</span>
@@ -60,7 +62,7 @@ export function setupPlayerStatsDisplay(element: HTMLElement) {
         <span class="stat-value">${stats.experience}</span>
       </div>
     `;
-    
+
     // Add any additional stats that might be sent from the game
     for (const [key, value] of Object.entries(stats)) {
       if (!['health', 'mana', 'stamina', 'position', 'level', 'experience'].includes(key)) {
@@ -72,7 +74,7 @@ export function setupPlayerStatsDisplay(element: HTMLElement) {
         `;
       }
     }
-    
+
     // Update the element with the stats HTML
     element.innerHTML = statsHtml;
   };
@@ -81,41 +83,65 @@ export function setupPlayerStatsDisplay(element: HTMLElement) {
   updateStatsDisplay(currentPlayerStats);
 
   // Listen for player stats updates from the main process
-  if (window.electron) {
-    window.electron.ipcRenderer.on('player-stats-update', (_event: any, stats: PlayerStats) => {
-      currentPlayerStats = stats;
-      updateStatsDisplay(currentPlayerStats);
-    });
+  console.log('Electron IPC is available, setting up listeners');
 
-    // Request initial stats
-    window.electron.ipcRenderer.send('get-player-stats');
+  window.electron.ipcRenderer.on('player-stats-update', (stats: PlayerStats) => {
+    console.log('Received player stats update:', stats);
+    currentPlayerStats = stats;
+    updateStatsDisplay(currentPlayerStats);
+  });
+
+  // Listen for connection status updates
+  window.electron.ipcRenderer.on('connection-status-update', (isConnected: boolean) => {
+    console.log('Connection status update:', isConnected);
+    const connectionStatus = document.getElementById('connection-status');
+    if (connectionStatus) {
+      if (isConnected) {
+        connectionStatus.textContent = 'Connected to UE5 game';
+        connectionStatus.classList.remove('disconnected');
+        connectionStatus.classList.add('connected');
+      } else {
+        connectionStatus.textContent = 'Waiting for UE5 game connection...';
+        connectionStatus.classList.remove('connected');
+        connectionStatus.classList.add('disconnected');
+      }
+    }
+  });
+
+  // Request initial stats
+  console.log('Requesting initial player stats');
+  window.electron.ipcRenderer.send('get-player-stats');
+}
+
+// Initialize the player stats display in any environment including Electron
+console.log('Initializing player stats display');
+if (typeof document !== 'undefined') {
+  // Function to initialize when DOM is ready
+  const initializeStatsDisplay = () => {
+    const playerStatsElement = document.getElementById('player-stats');
+    if (playerStatsElement) {
+      console.log('Found player stats element, setting up display');
+      setupPlayerStatsDisplay(playerStatsElement);
+    } else {
+      console.warn('Player stats element not found in the DOM');
+    }
+  };
+
+  // Check if document is already loaded
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeStatsDisplay);
   } else {
-    console.warn('Electron IPC not available. Running in browser mode with mock data.');
-    
-    // If running in browser mode (not Electron), simulate stats updates
-    setInterval(() => {
-      // Simulate changing stats
-      currentPlayerStats.health = Math.max(0, Math.min(100, currentPlayerStats.health + (Math.random() > 0.5 ? 1 : -1)));
-      currentPlayerStats.mana = Math.max(0, Math.min(100, currentPlayerStats.mana + (Math.random() > 0.5 ? 1 : -1)));
-      currentPlayerStats.stamina = Math.max(0, Math.min(100, currentPlayerStats.stamina + (Math.random() > 0.5 ? 1 : -1)));
-      currentPlayerStats.position.x += (Math.random() - 0.5) * 2;
-      currentPlayerStats.position.y += (Math.random() - 0.5) * 2;
-      currentPlayerStats.position.z += (Math.random() - 0.5) * 2;
-      
-      updateStatsDisplay(currentPlayerStats);
-    }, 1000);
+    // DOM already loaded, run initialization directly
+    initializeStatsDisplay();
   }
 }
 
-// Initialize the player stats display
-setupPlayerStatsDisplay(document.getElementById('counter-value') as HTMLElement);
-
-// Add type definition for Electron IPC in browser context
+// Add type definition for Electron IPC
 declare global {
   interface Window {
-    electron?: {
+    electron: {
       ipcRenderer: {
-        on: (channel: string, listener: (event: any, ...args: any[]) => void) => void;
+        on: (channel: string, listener: (...args: any[]) => void) => void;
         send: (channel: string, ...args: any[]) => void;
       };
     };

@@ -101,7 +101,8 @@ The Electron app expects player stats in the following format:
 - `src/` - Renderer process code
   - `main.ts` - Renderer process entry point
 - `public/` - Static assets
-- `UE5_WebSocket_Example.cpp` - Example UE5 WebSocket client code
+
+Note: This application is designed to run exclusively in Electron and does not support browser mode.
 
 ### Modifying the UI
 

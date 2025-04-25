@@ -1,7 +1,7 @@
 import { app, BrowserWindow, ipcMain } from 'electron';
 import * as path from 'path';
 import * as url from 'url';
-import * as WebSocket from 'ws';
+import WebSocket from 'ws';
 
 // Keep a global reference of the window object to prevent it from being garbage collected
 let mainWindow: BrowserWindow | null = null;
@@ -9,6 +9,8 @@ let mainWindow: BrowserWindow | null = null;
 let wss: WebSocket.Server | null = null;
 // Store the latest player stats
 let playerStats: any = {};
+// Track if a game is currently connected
+let isGameConnected: boolean = false;
 
 function createWindow() {
   // Create the browser window
@@ -49,11 +51,17 @@ function setupWebSocketServer() {
   console.log('WebSocket server started on port 8080');
 
   // Handle connections
-  wss.on('connection', (ws) => {
+  wss.on('connection', (ws: WebSocket) => {
     console.log('UE5 game connected to WebSocket server');
+    isGameConnected = true;
+    
+    // Notify the renderer about connection status change
+    if (mainWindow) {
+      mainWindow.webContents.send('connection-status-update', true);
+    }
 
     // Handle messages from UE5 game
-    ws.on('message', (message) => {
+    ws.on('message', (message: WebSocket.RawData) => {
       try {
         // Parse the message as JSON
         const data = JSON.parse(message.toString());
@@ -74,6 +82,12 @@ function setupWebSocketServer() {
     // Handle disconnection
     ws.on('close', () => {
       console.log('UE5 game disconnected from WebSocket server');
+      isGameConnected = false;
+      
+      // Notify the renderer about connection status change
+      if (mainWindow) {
+        mainWindow.webContents.send('connection-status-update', false);
+      }
     });
   });
 }
@@ -84,8 +98,9 @@ app.whenReady().then(() => {
   setupWebSocketServer();
 
   // Set up a timer to send player stats to the renderer process every second
+  // but only if a game is connected
   setInterval(() => {
-    if (mainWindow) {
+    if (mainWindow && isGameConnected) {
       mainWindow.webContents.send('player-stats-update', playerStats);
     }
   }, 1000);
@@ -114,5 +129,11 @@ app.on('before-quit', () => {
 
 // Handle IPC messages from renderer process
 ipcMain.on('get-player-stats', (event) => {
-  event.reply('player-stats-update', playerStats);
+  // Send connection status along with player stats
+  event.reply('connection-status-update', isGameConnected);
+  
+  // Only send player stats if actually connected
+  if (isGameConnected) {
+    event.reply('player-stats-update', playerStats);
+  }
 });
