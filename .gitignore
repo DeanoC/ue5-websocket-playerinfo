@@ -34,7 +34,9 @@ DerivedDataCache/
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
-.idea
+# Allow WebStorm run configurations while ignoring other .idea files
+.idea/*
+!.idea/runConfigurations/
 .DS_Store
 *.suo
 *.ntvs*
