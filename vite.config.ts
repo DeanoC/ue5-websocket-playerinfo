@@ -36,7 +36,7 @@ export default defineConfig({
       // Support WebStorm's debugging
       optimizeDeps: {
     entries: [
-      'src\\main.ts'
+      'src\\main.tsx'
     ]
       }
 });

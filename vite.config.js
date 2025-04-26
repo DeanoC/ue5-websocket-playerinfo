@@ -18,7 +18,7 @@ exports.default = (0, vite_1.defineConfig)({
     // Support WebStorm's debugging
     optimizeDeps: {
         entries: [
-            'src/main.ts'
+            'src/main.tsx'
         ]
     }
 });

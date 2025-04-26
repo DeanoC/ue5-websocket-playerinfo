@@ -1,6 +1,6 @@
 /* Import the styles from public/style.css */
 /* This ensures we maintain the same styling as before */
-@import url('./style.css');
+@import url('/style.css');
 
 /* Base styles for the application */
 body {

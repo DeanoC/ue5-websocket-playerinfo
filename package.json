@@ -8,7 +8,9 @@
     "electron:dev": "cross-env NODE_ENV=development tsc -p electron && vite build && electron .",
     "electron:build": "tsc -p electron && vite build && electron-builder",
     "start": "npm run electron:start",
-    "build": "npm run electron:build"
+    "build": "npm run electron:build",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "devDependencies": {
     "typescript": "^5.2.2",
@@ -21,7 +23,11 @@
     "@types/react-dom": "^18.2.7",
     "@vitejs/plugin-react": "^4.2.1",
     "vite-plugin-electron": "^0.15.5",
-    "cross-env": "^7.0.3"
+    "cross-env": "^7.0.3",
+    "vitest": "^1.2.0",
+    "@testing-library/react": "^14.1.2",
+    "@testing-library/jest-dom": "^6.1.5",
+    "jsdom": "^23.0.1"
   },
   "dependencies": {
     "ws": "^8.16.0",

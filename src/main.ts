@@ -1,4 +1,6 @@
 // Interface for player stats
+// NOTE: This file is deprecated and kept for reference only.
+// The active PlayerStats interface is now in src/store/playerStatsSlice.ts
 interface PlayerStats {
   health: number;
   mana: number;
