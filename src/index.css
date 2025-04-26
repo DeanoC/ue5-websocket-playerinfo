@@ -1,0 +1,12 @@
+/* Import the styles from public/style.css */
+/* This ensures we maintain the same styling as before */
+@import url('./style.css');
+
+/* Base styles for the application */
+body {
+  font-family: Arial, sans-serif;
+  background-color: #1e1e1e;
+  color: #fff;
+  margin: 0;
+  padding: 20px;
+}

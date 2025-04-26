@@ -6,66 +6,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>UE5 Player Stats</title>
   <link rel="stylesheet" href="/style.css">
-  <style>
-    .player-stats {
-      background-color: #2b2b2b;
-      border-radius: 8px;
-      padding: 20px;
-      margin: 20px 0;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    }
-    .stat-item {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 10px;
-      padding: 8px;
-      background-color: #333;
-      border-radius: 4px;
-    }
-    .stat-label {
-      font-weight: bold;
-      color: #ccc;
-    }
-    .stat-value {
-      color: #fff;
-    }
-    .connection-status {
-      padding: 10px;
-      margin-top: 20px;
-      border-radius: 4px;
-      text-align: center;
-    }
-    .connected {
-      background-color: #2e7d32;
-      color: white;
-    }
-    .disconnected {
-      background-color: #c62828;
-      color: white;
-    }
-  </style>
 </head>
 <body>
-<header class="logo">
-  <h1>UE5 Player Stats Monitor</h1>
-</header>
-<main id="app">
-  <h2 class="title">
-    Real-time Player Statistics
-  </h2>
-  <section class="player-stats">
-    <div class="player-stats-info">
-      <p class="player-stats-text">Current Player Stats:</p>
-      <div class="player-stats-value" id="player-stats"></div>
-    </div>
-    <div class="connection-status disconnected" id="connection-status">
-      Waiting for UE5 game connection...
-    </div>
-  </section>
-</main>
-<footer>
-  <p>Connect your UE5 game to WebSocket server at ws://localhost:8080</p>
-</footer>
-<script type="module" src="/src/main.ts"></script>
+  <div id="app"></div>
+  <script type="module" src="/src/main.tsx"></script>
 </body>
 </html>
