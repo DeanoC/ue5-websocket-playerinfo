@@ -3,24 +3,34 @@ import { updatePlayerStats } from '../store/playerStatsSlice';
 import { setConnectionStatus } from '../store/connectionSlice';
 
 const ipcMiddleware: Middleware = store => next => action => {
-  // Process the action normally
+  // Process the action normally first
   const result = next(action);
 
-  // Set up IPC listeners when the middleware is first used
+  // Log every time the middleware runs (for any action)
+  // console.log('[ipcMiddleware] Action processed:', action.type);
+
+  // Set up IPC listeners only once
   if (!window.ipcListenersInitialized) {
-    window.electron.ipcRenderer.on('player-stats-update', (stats) => {
-      store.dispatch(updatePlayerStats(stats));
-    });
+    console.log('[ipcMiddleware] Initializing IPC listeners...'); // <-- Add Log
 
-    window.electron.ipcRenderer.on('connection-status-update', (isConnected) => {
-      store.dispatch(setConnectionStatus(isConnected));
-    });
+    try {
+      window.electron.ipcRenderer.on('player-stats-update', (stats) => {
+        store.dispatch(updatePlayerStats(stats));
+      });
 
-    // Request initial stats
-    window.electron.ipcRenderer.send('get-player-stats');
+      // Listener for Connection Status
+      window.electron.ipcRenderer.on('connection-status-update', (isConnected) => {
+        store.dispatch(setConnectionStatus(isConnected));
+      });
 
-    // Mark that we've initialized the listeners
-    window.ipcListenersInitialized = true;
+      // Request initial state *after* listeners are set up
+      window.electron.ipcRenderer.send('get-player-stats');
+
+      // Mark as initialized
+      window.ipcListenersInitialized = true;
+    } catch (error) {
+        console.error('[ipcMiddleware] Error setting up listeners:', error); // <-- Add Error Log
+    }
   }
 
   return result;

@@ -4,39 +4,37 @@
   "version": "0.1.0",
   "main": "dist-electron/main.js",
   "scripts": {
-    "start": "electron .",
-    "debug": "electron --inspect-brk=9229 .",
-    "electron:debug:ts": "cross-env NODE_ENV=development tsc -p electron && electron .",
-    "electron:start": "tsc -p electron && vite build && electron .",
-    "electron:dev": "cross-env NODE_ENV=development tsc -p electron && vite build --mode development && electron .",
-    "electron:build": "tsc -p electron && vite build && electron-builder",
-    "build": "npm run electron:build",
+
+    "dev": "vite -c vite.config.ts", 
+    "build": "vite build && electron-builder",
+
     "test": "vitest run",
     "test:watch": "vitest"
   },
   "devDependencies": {
-    "typescript": "^5.2.2",
-    "prettier": "^3.3.1",
-    "vite": "^5.2.0",
-    "electron": "^29.1.0",
-    "electron-builder": "^24.13.3",
-    "@types/ws": "^8.5.10",
+    "@testing-library/jest-dom": "^6.1.5",
+    "@testing-library/react": "^14.1.2",
+    "@types/node": "^22.15.2",
     "@types/react": "^18.2.15",
     "@types/react-dom": "^18.2.7",
+    "@types/ws": "^8.5.10",
     "@vitejs/plugin-react": "^4.2.1",
-    "vite-plugin-electron": "^0.15.5",
     "cross-env": "^7.0.3",
-    "vitest": "^1.2.0",
-    "@testing-library/react": "^14.1.2",
-    "@testing-library/jest-dom": "^6.1.5",
-    "jsdom": "^23.0.1"
+    "electron": "^29.1.0",
+    "electron-builder": "^24.13.3",
+    "jsdom": "^23.0.1",
+    "prettier": "^3.3.1",
+    "typescript": "^5.2.2",
+    "vite": "^5.2.0",
+    "vite-plugin-electron": "^0.15.5",
+    "vitest": "^1.2.0"
   },
   "dependencies": {
-    "ws": "^8.16.0",
+    "@reduxjs/toolkit": "^1.9.7",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "redux": "^4.2.1",
     "react-redux": "^8.1.3",
-    "@reduxjs/toolkit": "^1.9.7"
+    "redux": "^4.2.1",
+    "ws": "^8.16.0"
   }
 }

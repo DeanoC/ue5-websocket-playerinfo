@@ -1,7 +1,9 @@
 import { app, BrowserWindow, ipcMain } from 'electron';
 import * as path from 'path';
 import * as url from 'url';
-import WebSocket from 'ws';
+
+// Use CommonJS require for the 'ws' library in the main process
+const WebSocket = require('ws');
 
 // Keep a global reference of the window object to prevent it from being garbage collected
 let mainWindow: BrowserWindow | null = null;
@@ -32,14 +34,26 @@ function createWindow() {
         }
       });
           
-        // Load the index.html from the dist directory
-        const indexPath = path.join(__dirname, '../dist/index.html');
-        mainWindow.loadFile(indexPath); // Use loadFile instead of loadURL for simplicity
-      
-        // Open DevTools in development mode
-        if (process.env.NODE_ENV === 'development') {
-          mainWindow?.webContents.openDevTools();
+  // Load the index.html of the app.
+  // VITE_DEV_SERVER_URL will be set if the Vite server is running (during development)
+  if (process.env.VITE_DEV_SERVER_URL) {
+    mainWindow.loadURL(process.env.VITE_DEV_SERVER_URL);
+    console.log('Loading renderer from Vite dev server:', process.env.VITE_DEV_SERVER_URL);
+
+    // Open the DevTools automatically in development
+    mainWindow.webContents.openDevTools();
+  } else {
+    // Load the index.html from the dist folder in production
+    const indexPath = path.join(__dirname, '../dist/index.html');
+    mainWindow.loadFile(indexPath);
+    console.log('Loading renderer from file:', indexPath);
   }
+
+  // Remove or comment out the separate DevTools check below this, 
+  // as it's now handled within the `if` block above for development.
+  // if (process.env.NODE_ENV === 'development') {
+  //   mainWindow?.webContents.openDevTools();
+  // }
 
   // Handle window being closed
   mainWindow.on('closed', () => {
