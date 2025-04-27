@@ -5,14 +5,13 @@ import Footer from './components/Footer';
 
 const App: React.FC = () => {
   return (
-    <>
+    <div className="app-container">
       <Header />
-      <main>
-        <h2 className="title">Real-time Player Statistics</h2>
+      <main className="app-main">
         <PlayerStatsDisplay />
       </main>
       <Footer />
-    </>
+    </div>
   );
 };
 

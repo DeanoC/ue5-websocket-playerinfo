@@ -4,10 +4,12 @@
   "version": "0.1.0",
   "main": "dist-electron/main.js",
   "scripts": {
+    "start": "electron .",
+    "debug": "electron --inspect-brk=9229 .",
+    "electron:debug:ts": "cross-env NODE_ENV=development tsc -p electron && electron .",
     "electron:start": "tsc -p electron && vite build && electron .",
     "electron:dev": "cross-env NODE_ENV=development tsc -p electron && vite build --mode development && electron .",
     "electron:build": "tsc -p electron && vite build && electron-builder",
-    "start": "npm run electron:start",
     "build": "npm run electron:build",
     "test": "vitest run",
     "test:watch": "vitest"

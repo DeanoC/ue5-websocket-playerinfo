@@ -24,18 +24,21 @@ function createWindow() {
     },
   });
 
-  // Load the index.html from the dist directory
-  const indexPath = url.format({
-    pathname: path.join(__dirname, '../dist/index.html'),
-    protocol: 'file:',
-    slashes: true,
-  });
-
-  mainWindow.loadURL(indexPath);
-
-  // Open DevTools in development mode
-  if (process.env.NODE_ENV === 'development') {
-    mainWindow.webContents.openDevTools();
+      // Add keyboard shortcut to open dev tools
+      mainWindow.webContents.on('before-input-event', (event, input) => {
+        if (input.control && input.key.toLowerCase() === 'i') {
+          mainWindow?.webContents.openDevTools();
+          event.preventDefault();
+        }
+      });
+          
+        // Load the index.html from the dist directory
+        const indexPath = path.join(__dirname, '../dist/index.html');
+        mainWindow.loadFile(indexPath); // Use loadFile instead of loadURL for simplicity
+      
+        // Open DevTools in development mode
+        if (process.env.NODE_ENV === 'development') {
+          mainWindow?.webContents.openDevTools();
   }
 
   // Handle window being closed
@@ -92,10 +95,24 @@ function setupWebSocketServer() {
   });
 }
 
-// This method will be called when Electron has finished initialization
-app.whenReady().then(() => {
-  createWindow();
-  setupWebSocketServer();
+// For debugging purposes
+console.log('Main process starting');
+console.log('Command line args:', process.argv);
+
+// Add a debugger statement that will always pause execution when debugging
+if (process.argv.includes('--inspect-brk')) {
+  console.log('Debug mode detected, adding debugger statement');
+  debugger;
+}
+
+try {
+  // This method will be called when Electron has finished initialization
+  app.whenReady().then(() => {
+    console.log('App is ready');
+    createWindow();
+    console.log('Window created');
+    setupWebSocketServer();
+    console.log('WebSocket server initialized');
 
   // Set up a timer to send player stats to the renderer process every second
   // but only if a game is connected
@@ -137,3 +154,8 @@ ipcMain.on('get-player-stats', (event) => {
     event.reply('player-stats-update', playerStats);
   }
 });
+
+// End of try block from the beginning of the file
+} catch (error) {
+  console.error('Fatal error in main process:', error);
+}

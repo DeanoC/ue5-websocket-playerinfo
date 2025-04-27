@@ -2,8 +2,17 @@ import React from 'react';
 
 const Footer: React.FC = () => {
   return (
-    <footer>
-      <p>Connect your UE5 game to WebSocket server at ws://localhost:8080</p>
+    <footer className="app-footer">
+      <div className="connection-info">
+        <h3>Connection Information</h3>
+        <p>
+          <span className="connection-label">WebSocket URL:</span>
+          <code className="connection-url">ws://localhost:8080</code>
+        </p>
+      </div>
+      <div className="footer-note">
+        <p>This application monitors player statistics sent from Unreal Engine 5 games.</p>
+      </div>
     </footer>
   );
 };
