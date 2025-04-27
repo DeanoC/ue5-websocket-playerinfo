@@ -5,7 +5,7 @@
   "main": "dist-electron/main.js",
   "scripts": {
     "electron:start": "tsc -p electron && vite build && electron .",
-    "electron:dev": "cross-env NODE_ENV=development tsc -p electron && vite build && electron .",
+    "electron:dev": "cross-env NODE_ENV=development tsc -p electron && vite build --mode development && electron .",
     "electron:build": "tsc -p electron && vite build && electron-builder",
     "start": "npm run electron:start",
     "build": "npm run electron:build",
